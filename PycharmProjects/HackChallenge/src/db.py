@@ -35,7 +35,7 @@ class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
-    events = db.relationship("Team", cascade="delete")
+    events = db.relationship("Event", cascade="delete")
     fans = db.relationship(
         "Fan", secondary=association_table, back_populates="favorite_teams"
     )
@@ -48,14 +48,20 @@ class Team(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "event": [e.serialize() for e in self.events]
+            "events": [e.sub_serialize() for e in self.events]
+        }
+
+    def sub_serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
         }
 
 class Event(db.Model):
     __tablename__ = "event"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
-    time = db.Column(db.String, nullable=False)
+    time = db.Column(db.Integer, nullable=False)
     location = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
     team_id = db.Column(db.Integer, db.ForeignKey("team.id"))
@@ -74,5 +80,14 @@ class Event(db.Model):
             "time": self.time,
             "location": self.location,
             "description": self.description,
-            "team": Course.query.filter_by(id=self.team_id).first().serialize(),
+            "team": Course.query.filter_by(id=self.team_id).first().sub_serialize(),
+        }
+
+    def sub_serialize(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "time": self.time,
+            "location": self.location,
+            "description": self.description,
         }

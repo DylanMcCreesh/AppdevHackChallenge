@@ -1,1 +1,6 @@
-"# AppdevHackChallenge" 
+# AppdevHackChallenge
+
+
+## API Specification:
+
+

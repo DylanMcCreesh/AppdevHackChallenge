@@ -25,98 +25,77 @@ def success_response(data, code=200):
 def failure_response(message, code=404):
     return json.dumps({"error": message}), code
 
-# your routes here
-@app.route("/api/courses/")
-def get_courses():
-    return success_response(
-        {"courses": [c.serialize() for c in Course.query.all()]}
-    )
+# Team related routes
+@app.route("/api/teams/", methods=["GET"])
+def get_teams():
+    '''Get all teams.'''
+    pass
 
-@app.route("/api/courses/", methods=["POST"])
-def create_course():
-    body = json.loads(request.data)
-    if not body.get("name") or not body.get("code"):
-        return failure_response("not all fields were provided!", 400)
-    new_course = Course(code=body.get("code"), name=body.get("name"))
-    db.session.add(new_course)
-    db.session.commit()
-    return success_response(new_course.serialize(), 201)
+@app.route("/api/teams/", methods=["POST"])
+def create_team():
+    '''Create new team with given name and password.'''
+    pass
+
+@app.route("/api/teams/<int:team_id>/", methods=["GET"])
+def get_team(team_id):
+    '''Get info about team with team_id.'''
+    pass
+
+@app.route("/api/teams/<int:team_id>/", methods=["DELETE"])
+def delete_team(team_id):
+    '''Delete team with team_id.'''
+    pass
 
 
-@app.route("/api/courses/<int:course_id>/")
-def get_course(course_id):
-    course = Course.query.filter_by(id=course_id).first()
-    if course is None:
-        return failure_response("Course not found!")
-    return success_response(course.serialize())
+# Event related routes
+@app.route("/api/events/", methods=["GET"])
+def get_events():
+    '''Get all events.'''
+    pass
 
-@app.route("/api/courses/<int:course_id>/", methods=["DELETE"])
-def delete_course(course_id):
-    course = Course.query.filter_by(id=course_id).first()
-    if course is None:
-        return failure_response("Course not found!")
-    db.session.delete(course)
-    db.session.commit()
-    return success_response(course.serialize())
+@app.route("/api/events/<int:team_id>/<int:event_id>", methods=["GET"])
+def get_event(team_id, event_id):
+    '''Get event with event_id from team_id team.'''
+    pass
+
+@app.route("/api/events/<int:team_id>/", methods=["POST"])
+def post_event(team_id):
+    '''Post new event to team_id team.'''
+    pass
+
+@app.route("/api/events/<int:team_id>/<int:event_id>", methods=["DELETE"])
+def delete_event(team_id, event_id):
+    '''Delete event with team_id.'''
+    pass
+
+@app.route("/api/events/<int:user_id>/", methods=["GET"])
+def get_fav_events(user_id):
+    '''Get all events associated with user with user_id.'''
+    pass
+
+
+# User related routes
+@app.route("/api/users/<int:user_id>/", methods=["GET"])
+def get_user(user_id):
+    '''Get user with user_id.'''
+    pass
 
 @app.route("/api/users/", methods=["POST"])
 def create_user():
-    body = json.loads(request.data)
-    if not body.get("name") or not body.get("netid"):
-        return failure_response("not all fields were provided!", 400)
-    new_user = User(name=body.get("name"), netid=body.get("netid"))
-    db.session.add(new_user)
-    db.session.commit()
-    return success_response(new_user.serialize(), 201)
+    '''Create user with provided information.'''
+    pass
 
-@app.route("/api/users/<int:user_id>/")
-def get_user(user_id):
-    user = User.query.filter_by(id=user_id).first()
-    if user is None:
-        return failure_response("User not found!")
-    return success_response(user.serialize())
+@app.route("/api/users/<int:user_id>/favorites/", methods=["GET"])
+def get_fav_teams(user_id):
+    '''Get all favorite teams of user with user_id.'''
 
-@app.route("/api/courses/<int:course_id>/add/", methods=["POST"])
-def add_user(course_id):
-    body = json.loads(request.data)
-    course = Course.query.filter_by(id=course_id).first()
-    if course is None:
-        return failure_response("Course not found!")
-    if not body.get("user_id"):
-        return failure_response("user not provided!", 400)
-    if body.get("type") != "student" and body.get("type") != "instructor":
-        return failure_response("invalid user type", 400)
-    user = User.query.filter_by(id=body.get("user_id")).first()
-    if user is None:
-        return failure_response("User not found!")
-    for person in course.students:
-        if person.id == user.id:
-            return failure_response("already in the class!", 400)
-    for person in course.instructors:
-        if person.id == user.id:
-            return failure_response("already in the class!", 400)
-    if body.get("type") == "student":
-        course.students.append(user)
-    if body.get("type") == "instructor":
-        course.instructors.append(user)
-    db.session.commit()
-    course = Course.query.filter_by(id=course_id).first()
-    return success_response(course.serialize())
+@app.route("/api/users/<int:user_id>/favorites/<int:team_id>/", methods=["POST"])
+def add_fav_team(user_id, team_id):
+    '''Add team with team_id to users favorite teams.'''
 
-@app.route("/api/courses/<int:course_id>/assignment/", methods=["POST"])
-def add_assignment(course_id):
-    body = json.loads(request.data)
-    course = Course.query.filter_by(id=course_id).first()
-    if course is None:
-        return failure_response("Course not found!")
-    if not body.get("title") or not body.get("due_date"):
-        return failure_response("not all fields filled", 400)
-    assignment = Assignment(title=body.get("title"), due_date=body.get("due_date"), course_id=course_id)
-    course = Course.query.filter_by(id=course_id).first()
-    course.assignments.append(assignment)
-    db.session.add(assignment)
-    db.session.commit()
-    return success_response(assignment.serialize(), 201)
+@app.route("/api/users/<int:user_id>/favorites/<int:team_id>/", methods=["DELETE"])
+def remove_fav_team(user_id, team_id):
+    '''Remove team with team_id from users favorite teams.'''
 
 @app.route("/reset/")
 def reset():

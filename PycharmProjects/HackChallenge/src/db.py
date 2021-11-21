@@ -62,8 +62,10 @@ class Event(db.Model):
 
     def __init__(self, **kwargs):
         self.title = kwargs.get("title")
-        self.due_date = kwargs.get("due_date")
-        self.course_id = kwargs.get("course_id")
+        self.time = kwargs.get("time")
+        self.location = kwargs.get("location")
+        self.description = kwargs.get("description")
+        self.team_id = kwargs.get("team_id")
 
     def serialize(self):
         return {

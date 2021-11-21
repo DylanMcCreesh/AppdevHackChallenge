@@ -1,7 +1,7 @@
-from olddb import db
-from olddb import User
-from olddb import Assignment
-from olddb import Course
+from db import db
+from db import Fan
+from db import Team
+from db import Event
 from flask import Flask
 import json
 from flask import request
@@ -29,22 +29,44 @@ def failure_response(message, code=404):
 @app.route("/api/teams/", methods=["GET"])
 def get_teams():
     '''Get all teams.'''
-    pass
+    return success_response(
+        {"teams": [t.serialize() for t in Team.query.all()]}
+    )
 
 @app.route("/api/teams/", methods=["POST"])
 def create_team():
     '''Create new team with given name and password.'''
-    pass
+    body = json.loads(request.data)
+    if not body.get("name") or not body.get("password"):
+        return failure_response("not all fields were provided!", 400)
+    new_team = Team(name=body.get("name"), password=body.get("password"))
+    db.session.add(new_team)
+    db.session.commit()
+    return success_response(new_team.serialize(), 201)
 
 @app.route("/api/teams/<int:team_id>/", methods=["GET"])
 def get_team(team_id):
     '''Get info about team with team_id.'''
-    pass
+    team = Team.query.filter_by(id=team_id).first()
+    if team is None:
+        return failure_response("Team not found!")
+    return success_response(team.serialize())
+
 
 @app.route("/api/teams/<int:team_id>/", methods=["DELETE"])
 def delete_team(team_id):
     '''Delete team with team_id.'''
-    pass
+    team = Team.query.filter_by(id=team_id).first()
+    if team is None:
+        return failure_response("Course not found!")
+    body = json.loads(request.data)
+    if not body.get("name") or not body.get("password"):
+        return failure_response("please provide both team name and password!", 400)
+    if body.get("name") != team.name or  body.get("password") != team.password:
+        return failure_response("incorrect team name or password!", 400)
+    db.session.delete(team)
+    db.session.commit()
+    return success_response(team.serialize())
 
 
 # Event related routes
@@ -88,16 +110,19 @@ def create_user():
 @app.route("/api/users/<int:user_id>/favorites/", methods=["GET"])
 def get_fav_teams(user_id):
     '''Get all favorite teams of user with user_id.'''
+    pass
 
 @app.route("/api/users/<int:user_id>/favorites/<int:team_id>/", methods=["POST"])
 def add_fav_team(user_id, team_id):
     '''Add team with team_id to users favorite teams.'''
+    pass
 
 @app.route("/api/users/<int:user_id>/favorites/<int:team_id>/", methods=["DELETE"])
 def remove_fav_team(user_id, team_id):
     '''Remove team with team_id from users favorite teams.'''
+    pass
 
-@app.route("/reset/")
+@app.route("/reset/", methods=["POST"])
 def reset():
     db.drop_all()
     db.create_all()

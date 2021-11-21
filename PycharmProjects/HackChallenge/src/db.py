@@ -6,18 +6,20 @@ db = SQLAlchemy()
 association_table = db.Table(
     "Association",
     db.Model.metadata,
-    # db.Column("course_id", db.Integer, db.ForeignKey("course.id")),
-    # db.Column("user_id", db.Integer, db.ForeignKey("user.id")),
+    db.Column("team_id", db.Integer, db.ForeignKey("team.id")),
+    db.Column("fan_id", db.Integer, db.ForeignKey("fan.id")),
 )
 
-class User(db.Model):
-    __tablename__ = "user"
+class Fan(db.Model):
+    __tablename__ = "fan"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
-    favorite_teams = db.relationship("Team", cascade="delete")
+    favorite_teams = db.relationship(
+        "Team", secondary=association_table, back_populates="fans"
+    )
 
-        def __init__(self, **kwargs):
+    def __init__(self, **kwargs):
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
 
@@ -25,69 +27,38 @@ class User(db.Model):
         return {
             "id": self.id,
             "username": self.username,
-            "password": self.password,
-            "assignments": [a.serialize() for a in self.assignments],
-            "instructors": [i.sub_serialize() for i in self.instructors],
-            "students": [s.sub_serialize() for s in self.students],
+            "favorite_teams": [t.serialize() for t in self.favorite_teams]
         }
 
-    def sub_serialize1(self):
-        return {
-            "id": self.id,
-            "code": self.code,
-            "name": self.name,
-        }
-
-    def sub_serialize2(self):
-        return {
-            "id": self.id,
-            "code": self.code,
-            "name": self.name,
-            "assignments": [a.serialize() for a in self.assignments],
-        }
-
-class Game(db.Model):
-    __tablename__ = "game"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    netid = db.Column(db.String, nullable=False)
-    instructor_courses = db.relationship(
-        "Course", secondary=instrcutor_association_table, back_populates="instructors"
-    )
-    student_courses = db.relationship(
-        "Course", secondary=student_association_table, back_populates="students"
-    )
-
-
-    def __init__(self, **kwargs):
-        self.name = kwargs.get("name")
-        self.netid = kwargs.get("netid")
-
-    def serialize(self):
-        courses = []
-        for i in self.instructor_courses:
-            courses.append(i.sub_serialize2())
-        for s in self.student_courses:
-            courses.append(s.sub_serialize2())
-        return {
-            "id": self.id,
-            "name": self.name,
-            "netid": self.netid,
-            "courses": courses,
-        }
-
-    def sub_serialize(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "netid": self.netid,
-        }
 class Team(db.Model):
     __tablename__ = "team"
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    password = db.Column(db.String, nullable=False)
+    events = db.relationship("Team", cascade="delete")
+    fans = db.relationship(
+        "Fan", secondary=association_table, back_populates="favorite_teams"
+    )
+
+    def __init__(self, **kwargs):
+        self.name = kwargs.get("name")
+        self.password = kwargs.get("password")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "event": [e.serialize() for e in self.events]
+        }
+
+class Event(db.Model):
+    __tablename__ = "event"
+    id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
-    due_date = db.Column(db.Integer, nullable=False)
-    course_id = db.Column(db.Integer, db.ForeignKey("course.id"))
+    time = db.Column(db.String, nullable=False)
+    location = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"))
 
     def __init__(self, **kwargs):
         self.title = kwargs.get("title")
@@ -98,6 +69,8 @@ class Team(db.Model):
         return {
             "id": self.id,
             "title": self.title,
-            "due_date": self.due_date,
-            "course": Course.query.filter_by(id=self.course_id).first().sub_serialize1(),
+            "time": self.time,
+            "location": self.location,
+            "description": self.description,
+            "team": Course.query.filter_by(id=self.team_id).first().serialize(),
         }

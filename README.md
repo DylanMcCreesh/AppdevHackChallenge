@@ -123,7 +123,29 @@ Response:
 
 ### Create a new event
 `"/api/events/<int:team_id>/", methods=["POST"]`
-
+```
+Request:
+{
+    "name": "Cornell Women's Soccer", // Team name
+    "password": "password1",
+    "title": "Cornell Women's Soccer vs. UVA",
+    "time": 1553354209, // Event beginning in unix time
+    "location": "Charles F. Berman Field",
+    "description": "Enjoy pizza and root for our undefeated soccer team."
+}
+```
+```
+Response:
+<HTTP STATUS CODE 201>
+{
+    "id": 1,
+    "title": "Cornell Women's Soccer vs. UVA",
+    "time": 1553354209, // Event beginning in unix time
+    "location": "Charles F. Berman Field",
+    "description": "Enjoy pizza and root for our undefeated soccer team.",
+    "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
+}
+```
 
 ### Delete an event
 `"/api/events/<int:team_id>/<int:event_id>", methods=["DELETE"]`

@@ -112,11 +112,6 @@ def create_user():
     '''Create user with provided information.'''
     pass
 
-@app.route("/api/users/<int:user_id>/favorites/", methods=["GET"])
-def get_fav_teams(user_id):
-    '''Get all favorite teams of user with user_id.'''
-    pass
-
 @app.route("/api/users/<int:user_id>/favorites/<int:team_id>/", methods=["POST"])
 def add_fav_team(user_id, team_id):
     '''Add team with team_id to users favorite teams.'''

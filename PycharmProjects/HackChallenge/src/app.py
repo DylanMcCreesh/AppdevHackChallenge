@@ -58,7 +58,7 @@ def delete_team(team_id):
     '''Delete team with team_id.'''
     team = Team.query.filter_by(id=team_id).first()
     if team is None:
-        return failure_response("Course not found!")
+        return failure_response("Team not found!")
     body = json.loads(request.data)
     if not body.get("name") or not body.get("password"):
         return failure_response("please provide both team name and password!", 400)
@@ -77,14 +77,12 @@ def get_events():
         {"events": [e.sub_serialize() for e in Event.query.all()]}
     )
 
-@app.route("/api/events/<int:team_id>/<int:event_id>", methods=["GET"])
-def get_event(team_id, event_id):
+@app.route("/api/events/<int:event_id>/", methods=["GET"])
+def get_event( event_id):
     '''Get event with event_id from team_id team.'''
     event = Event.query.filter_by(id=event_id).first()
     if event is None:
         return failure_response("Event not found!")
-    if event.team_id != team_id:
-        return failure_response("Event not for this team!")
     return success_response(event.sub_serialize())
 
 @app.route("/api/events/<int:team_id>/", methods=["POST"])
@@ -92,7 +90,7 @@ def post_event(team_id):
     '''Post new event to team_id team.'''
     pass
 
-@app.route("/api/events/<int:team_id>/<int:event_id>", methods=["DELETE"])
+@app.route("/api/events/<int:team_id>/<int:event_id>/", methods=["DELETE"])
 def delete_event(team_id, event_id):
     '''Delete event with team_id.'''
     pass

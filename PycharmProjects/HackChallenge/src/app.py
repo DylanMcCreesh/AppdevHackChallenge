@@ -62,8 +62,8 @@ def delete_team(team_id):
     body = json.loads(request.data)
     if not body.get("name") or not body.get("password"):
         return failure_response("please provide both team name and password!", 400)
-    if body.get("name") != team.name or  body.get("password") != team.password:
-        return failure_response("incorrect team name or password!", 400)
+    if body.get("name") != team.name or body.get("password") != team.password:
+        return failure_response("incorrect team name or password!", 403)
     db.session.delete(team)
     db.session.commit()
     return success_response(team.serialize())
@@ -78,7 +78,7 @@ def get_events():
     )
 
 @app.route("/api/events/<int:event_id>/", methods=["GET"])
-def get_event( event_id):
+def get_event(event_id):
     '''Get event with event_id from team_id team.'''
     event = Event.query.filter_by(id=event_id).first()
     if event is None:
@@ -93,7 +93,18 @@ def post_event():
 @app.route("/api/events/<int:event_id>/", methods=["DELETE"])
 def delete_event(event_id):
     '''Delete event with event_id.'''
-    pass
+    event = Event.query.filter_by(id=event_id).first()
+    if event is None:
+        return failure_response("Event not found!")
+    team = Team.query.filter_by(id=event.team_id).first()
+    body = json.loads(request.data)
+    if not body.get("name") or not body.get("password"):
+        return failure_response("please provide both team name and password!", 400)
+    if body.get("name") != team.name or body.get("password") != team.password:
+        return failure_response("incorrect team name or password!", 403)
+    db.session.delete(event)
+    db.session.commit()
+    return success_response(event.serialize())
 
 @app.route("/api/events/<int:user_id>/", methods=["GET"])
 def get_fav_events(user_id):

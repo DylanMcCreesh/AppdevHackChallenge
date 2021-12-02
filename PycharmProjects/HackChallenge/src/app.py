@@ -88,7 +88,13 @@ def get_event( event_id):
 @app.route("/api/events/", methods=["POST"])
 def post_event():
     '''Post new event.'''
-    pass
+    body = json.loads(request.data)
+    if not body.get("name") or not body.get("password"):
+        return failure_response("not all fields were provided!", 400)
+    new_team = Team(name=body.get("name"), password=body.get("password"))
+    db.session.add(new_team)
+    db.session.commit()
+    return success_response(new_team.serialize(), 201)
 
 @app.route("/api/events/<int:event_id>/", methods=["DELETE"])
 def delete_event(event_id):
@@ -105,12 +111,21 @@ def get_fav_events(user_id):
 @app.route("/api/users/<int:user_id>/", methods=["GET"])
 def get_user(user_id):
     '''Get user with user_id.'''
-    pass
+    user = Fan.query.filter_by(id=user_id).first()
+    if user is None:
+        return failure_response("User not found!")
+    return success_response(user.serialize())
 
 @app.route("/api/users/", methods=["POST"])
 def create_user():
     '''Create user with provided information.'''
-    pass
+    body = json.loads(request.data)
+    if not body.get("name") or not body.get("password"):
+        return failure_response("not all fields were provided!", 400)
+    new_user = Fan(username=body.get("name"), password=body.get("password"))
+    db.session.add(new_user)
+    db.session.commit()
+    return success_response(new_user.serialize(), 201)
 
 @app.route("/api/users/<int:user_id>/favorites/<int:team_id>/", methods=["POST"])
 def add_fav_team(user_id, team_id):

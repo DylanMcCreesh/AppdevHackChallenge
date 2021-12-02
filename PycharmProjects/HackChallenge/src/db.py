@@ -34,6 +34,8 @@ class Team(db.Model):
     __tablename__ = "team"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
+    gender = db.Column(db.String, nullable=True)
+    sport = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
     events = db.relationship("Event", cascade="delete")
     fans = db.relationship(
@@ -43,11 +45,16 @@ class Team(db.Model):
     def __init__(self, **kwargs):
         self.name = kwargs.get("name")
         self.password = kwargs.get("password")
+        self.gender = kwargs.get("gender")
+        self.sport = kwargs.get("sport")
+
 
     def serialize(self):
         return {
             "id": self.id,
             "name": self.name,
+            "gender": self.gender,
+            "sport": self.sport,
             "events": [e.sub_serialize() for e in self.events]
         }
 
@@ -61,33 +68,60 @@ class Event(db.Model):
     __tablename__ = "event"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
-    time = db.Column(db.Integer, nullable=False)
-    location = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
+    unixTime = db.Column(db.Integer, nullable=False)
+    location = db.Column(db.String, nullable=False)
+    date = db.Column(db.String, nullable=False)
+    time = db.Column(db.String, nullable=False)
+    opponent = db.Column(db.String, nullable=False)
+    score = db.Column(db.String, nullable=False)
+    win = db.Column(db.Integer, nullable=True)
     team_id = db.Column(db.Integer, db.ForeignKey("team.id"))
 
     def __init__(self, **kwargs):
         self.title = kwargs.get("title")
-        self.time = kwargs.get("time")
+        self.unixTime = kwargs.get("unixTime")
         self.location = kwargs.get("location")
+        self.date = kwargs.get("date")
+        self.time = kwargs.get("time")
         self.description = kwargs.get("description")
+        self.opponent = kwargs.get("opponent")
+        self.win = kwargs.get("win")
         self.team_id = kwargs.get("team_id")
 
     def serialize(self):
+        wonString = None
+        if win == 0:
+            wonString = "W"
+        if win == 1:
+            wonString = "L"
+        if win == 2:
+            wonString = "T"
         return {
             "id": self.id,
             "title": self.title,
-            "time": self.time,
+            "unixTime": self.unixTime,
             "location": self.location,
+            "date": self.date,
+            "time": self.time,
             "description": self.description,
-            "team": Course.query.filter_by(id=self.team_id).first().sub_serialize(),
+            "opponent": self.opponent,
+            "win": wonString,
+            "team": Team.query.filter_by(id=self.team_id).first().sub_serialize(),
+            "gender": Team.query.filter_by(id=self.team_id).first().gender,
+            "sport": Team.query.filter_by(id=self.team_id).first().sport,
         }
 
     def sub_serialize(self):
         return {
             "id": self.id,
             "title": self.title,
-            "time": self.time,
+            "unixTime": self.unixTime,
             "location": self.location,
-            "description": self.description,
+            "date": self.date,
+            "time": self.time,
+            "opponent": self.opponent,
+            "win": wonString,
+            "gender": Team.query.filter_by(id=self.team_id).first().gender,
+            "sport": Team.query.filter_by(id=self.team_id).first().sport,
         }

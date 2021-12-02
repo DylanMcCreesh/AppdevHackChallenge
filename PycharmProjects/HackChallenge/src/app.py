@@ -74,13 +74,18 @@ def delete_team(team_id):
 def get_events():
     '''Get all events.'''
     return success_response(
-        {"events": [e.serialize() for e in Event.query.all()]}
+        {"events": [e.sub_serialize() for e in Event.query.all()]}
     )
 
 @app.route("/api/events/<int:team_id>/<int:event_id>", methods=["GET"])
 def get_event(team_id, event_id):
     '''Get event with event_id from team_id team.'''
-    pass
+    event = Event.query.filter_by(id=event_id).first()
+    if event is None:
+        return failure_response("Event not found!")
+    if event.team_id != team_id:
+        return failure_response("Event not for this team!")
+    return success_response(event.sub_serialize())
 
 @app.route("/api/events/<int:team_id>/", methods=["POST"])
 def post_event(team_id):

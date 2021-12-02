@@ -77,7 +77,7 @@ Response:
 ```
 
 
-## Event related routes - Not yet Implemented
+## Event related routes
 ### Get all events
 `"/api/events/", methods=["GET"]`
 ```
@@ -88,17 +88,25 @@ Response:
         {
             "id": 1,
             "title": "Cornell Women's Soccer vs. UVA",
-            "time": 1553354209, // Event beginning in unix time
+            "unixTime": 1638485544, // Event beginning in unix time
             "location": "Charles F. Berman Field",
+            "date": "2021-08-02",
+            "time": "06:43:43",
             "description": "Enjoy pizza and root for our undefeated soccer team.",
+            "opponent": "UVA Women's Soccer",
+            "win": "W",
             "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
         },
         {
             "id": 2,
-            "title": "Princeton Hockey vs. Cornell Lacrosse",
-            "time": 1553364809, // Event beginning in unix time
+            "title": "Princeton Hockey vs. Cornell Hockey",
+            "unixTime": 1553364809, // Event beginning in unix time
             "location": "Lynah Rink",
+            "date": "2021-08-02"
+            "time": "06:43:43",
             "description": "Don't miss the game of the century!",
+            "opponent": "Princeton Hockey"
+            "win": "L",
             "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
         }
         ...
@@ -107,31 +115,36 @@ Response:
 ```
 
 ### Get a specific event
-`"/api/events/<int:team_id>/<int:event_id>", methods=["GET"]`
+`"/api/events/<int:event_id>", methods=["GET"]`
 ```
 Response:
 <HTTP STATUS CODE 200>
 {
     "id": 1,
     "title": "Cornell Women's Soccer vs. UVA",
-    "time": 1553354209, // Event beginning in unix time
+    "unixTime": 1638485544, // Event beginning in unix time
     "location": "Charles F. Berman Field",
+    "date": "2021-08-02",
+    "time": "06:43:43",
     "description": "Enjoy pizza and root for our undefeated soccer team.",
+    "opponent": "UVA Women's Soccer",
+    "win": "W",
     "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
 }
 ```
 
 ### Create a new event
-`"/api/events/<int:team_id>/", methods=["POST"]`
+`"/api/events/", methods=["POST"]`
 ```
 Request:
 {
-    "name": "Cornell Women's Soccer", // Team name
-    "password": "password1",
     "title": "Cornell Women's Soccer vs. UVA",
-    "time": 1553354209, // Event beginning in unix time
+    "unixTime": 1638485544, // Event beginning in unix time
     "location": "Charles F. Berman Field",
-    "description": "Enjoy pizza and root for our undefeated soccer team."
+    "description": "Enjoy pizza and root for our undefeated soccer team.",
+    "opponent": "UVA Women's Soccer",
+    "win": "W",
+    "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
 }
 ```
 ```
@@ -140,36 +153,145 @@ Response:
 {
     "id": 1,
     "title": "Cornell Women's Soccer vs. UVA",
-    "time": 1553354209, // Event beginning in unix time
+    "unixTime": 1638485544, // Event beginning in unix time
     "location": "Charles F. Berman Field",
+    "date": "2021-08-02",
+    "time": "06:43:43",
     "description": "Enjoy pizza and root for our undefeated soccer team.",
+    "opponent": "UVA Women's Soccer",
+    "win": "W",
     "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
 }
 ```
 
 ### Delete an event
-`"/api/events/<int:team_id>/<int:event_id>", methods=["DELETE"]`
-
+`"/api/events/<int:event_id>", methods=["DELETE"]`
+```
+Response:
+<HTTP STATUS CODE 201>
+{
+    "id": 1,
+    "title": "Cornell Women's Soccer vs. UVA",
+    "unixTime": 1638485544, // Event beginning in unix time
+    "location": "Charles F. Berman Field",
+    "date": "2021-08-02",
+    "time": "06:43:43",
+    "description": "Enjoy pizza and root for our undefeated soccer team.",
+    "opponent": "UVA Women's Soccer",
+    "win": "W",
+    "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
+}
+```
 
 ### Get all events from user's favorite teams
 `"/api/events/<int:user_id>/", methods=["GET"]`
+```
+Response:
+<HTTP STATUS CODE 200>
+{
+    "events": [
+        {
+            "id": 3,
+            "title": "Cornell Women's Soccer vs. UVA",
+            "unixTime": 1638485544, // Event beginning in unix time
+            "location": "Charles F. Berman Field",
+            "date": "2021-08-02",
+            "time": "06:43:43",
+            "description": "Enjoy pizza and root for our undefeated soccer team.",
+            "opponent": "UVA Women's Soccer",
+            "win": "W",
+            "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
+        },
+        {
+            "id": 7,
+            "title": "Princeton Hockey vs. Cornell Hockey",
+            "unixTime": 1553364809, // Event beginning in unix time
+            "location": "Lynah Rink",
+            "date": "2021-08-02"
+            "time": "06:43:43",
+            "description": "Don't miss the game of the century!",
+            "opponent": "Princeton Hockey"
+            "win": "L",
+            "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
+        }
+        ...
+    ]
+}
+```
 
-
-
-## User related routes - Not yet implemented
+## User related routes
 ### Get user
 `"/api/users/<int:user_id>/", methods=["GET"]`
-
+```
+Request:
+{
+    "name": "John Smith",
+    "password": "iluvmymommy"
+}
+```
+```
+Response:
+<HTTP STATUS CODE 200>
+{
+    "id": 41,
+    "name": "John Smith",
+    "teams": [<SERIALIZED TEAM>, ... ] // Favorite teams
+}
+```
 
 ### Create user
 `"/api/users/", methods=["POST"]`
-
-
-### Get user's favorite teams
-`"/api/users/<int:user_id>/favorites/", methods=["GET"]`
+```
+Request:
+{
+    "name": "Inle Bush",
+    "password": "supersecretpassword"
+}
+```
+```
+Response:
+<HTTP STATUS CODE 201>
+{
+    "id": 30,
+    "name": "Inle Bush",
+    "teams": []
+}
+```
 
 ### Add team to favorites
 `"/api/users/<int:user_id>/favorites/<int:team_id>/", methods=["POST"]`
+```
+Request:
+{
+    "name": "John Smith",
+    "password": "iluvmymommy"
+}
+```
+```
+Response:
+<HTTP STATUS CODE 201>
+{
+    "id": 41,
+    "name": "John Smith",
+    "teams": [<SERIALIZED TEAM>, ... ] // Favorite teams with added team
+}
+```
 
 ### Remove team from favorites
 `"/api/users/<int:user_id>/favorites/<int:team_id>/", methods=["DELETE"]`
+```
+Request:
+{
+    "name": "John Smith",
+    "password": "iluvmymommy"
+}
+```
+```
+Response:
+<HTTP STATUS CODE 200>
+{
+    "id": 41,
+    "name": "John Smith",
+    "teams": [<SERIALIZED TEAM>, ... ] // Favorite teams without team
+}
+```

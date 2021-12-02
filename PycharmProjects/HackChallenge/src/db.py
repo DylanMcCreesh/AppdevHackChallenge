@@ -91,11 +91,11 @@ class Event(db.Model):
 
     def serialize(self):
         wonString = None
-        if win == 0:
+        if self.win == 0:
             wonString = "W"
-        if win == 1:
+        if self.win == 1:
             wonString = "L"
-        if win == 2:
+        if self.win == 2:
             wonString = "T"
         return {
             "id": self.id,
@@ -113,6 +113,13 @@ class Event(db.Model):
         }
 
     def sub_serialize(self):
+        wonString = None
+        if self.win == 0:
+            wonString = "W"
+        if self.win == 1:
+            wonString = "L"
+        if self.win == 2:
+            wonString = "T"
         return {
             "id": self.id,
             "title": self.title,

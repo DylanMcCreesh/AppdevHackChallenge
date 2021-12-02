@@ -85,14 +85,14 @@ def get_event( event_id):
         return failure_response("Event not found!")
     return success_response(event.sub_serialize())
 
-@app.route("/api/events/<int:team_id>/", methods=["POST"])
-def post_event(team_id):
-    '''Post new event to team_id team.'''
+@app.route("/api/events/", methods=["POST"])
+def post_event():
+    '''Post new event.'''
     pass
 
-@app.route("/api/events/<int:team_id>/<int:event_id>/", methods=["DELETE"])
-def delete_event(team_id, event_id):
-    '''Delete event with team_id.'''
+@app.route("/api/events/<int:event_id>/", methods=["DELETE"])
+def delete_event(event_id):
+    '''Delete event with event_id.'''
     pass
 
 @app.route("/api/events/<int:user_id>/", methods=["GET"])

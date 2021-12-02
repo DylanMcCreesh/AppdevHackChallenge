@@ -73,7 +73,9 @@ def delete_team(team_id):
 @app.route("/api/events/", methods=["GET"])
 def get_events():
     '''Get all events.'''
-    pass
+    return success_response(
+        {"events": [e.serialize() for e in Event.query.all()]}
+    )
 
 @app.route("/api/events/<int:team_id>/<int:event_id>", methods=["GET"])
 def get_event(team_id, event_id):

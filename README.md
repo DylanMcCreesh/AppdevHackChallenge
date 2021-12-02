@@ -3,7 +3,7 @@
 
 ## API Specification:
 
-## Team related routes - These first four routes are the ones implemented so far
+## Team related routes
 ### Get all teams
 `"/api/teams/", methods=["GET"]`
 ```
@@ -138,6 +138,9 @@ Response:
 ```
 Request:
 {
+    "teamid": 3,
+    "name": "Cornell Women's Soccer",
+    "password": "password1"
     "title": "Cornell Women's Soccer vs. UVA",
     "unixTime": 1638485544, // Event beginning in unix time
     "location": "Charles F. Berman Field",
@@ -167,6 +170,13 @@ Response:
 ### Delete an event
 `"/api/events/<int:event_id>", methods=["DELETE"]`
 ```
+Request:
+{
+    "name": "Cornell Women's Soccer",
+    "password": "password1"
+}
+```
+```
 Response:
 <HTTP STATUS CODE 201>
 {
@@ -185,6 +195,13 @@ Response:
 
 ### Get all events from user's favorite teams
 `"/api/events/<int:user_id>/", methods=["GET"]`
+```
+Request:
+{
+    "name": "John Smith",
+    "password": "iluvmymommy"
+}
+```
 ```
 Response:
 <HTTP STATUS CODE 200>

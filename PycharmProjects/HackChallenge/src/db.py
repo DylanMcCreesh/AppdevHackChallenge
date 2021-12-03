@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -71,8 +72,6 @@ class Event(db.Model):
     description = db.Column(db.String, nullable=False)
     unixTime = db.Column(db.Integer, nullable=False)
     location = db.Column(db.String, nullable=False)
-    date = db.Column(db.String, nullable=False)
-    time = db.Column(db.String, nullable=False)
     opponent = db.Column(db.String, nullable=False)
     score = db.Column(db.String, nullable=False)
     win = db.Column(db.Integer, nullable=True)
@@ -82,11 +81,10 @@ class Event(db.Model):
         self.title = kwargs.get("title")
         self.unixTime = kwargs.get("unixTime")
         self.location = kwargs.get("location")
-        self.date = kwargs.get("date")
-        self.time = kwargs.get("time")
         self.description = kwargs.get("description")
         self.opponent = kwargs.get("opponent")
         self.win = kwargs.get("win")
+        self.score = kwargs.get("score")
         self.team_id = kwargs.get("team_id")
 
     def serialize(self):
@@ -102,8 +100,8 @@ class Event(db.Model):
             "title": self.title,
             "unixTime": self.unixTime,
             "location": self.location,
-            "date": self.date,
-            "time": self.time,
+            "date": datetime.fromtimestamp(self.unixTime).date(),
+            "time": datetime.fromtimestamp(self.unixTime).time(),
             "description": self.description,
             "opponent": self.opponent,
             "win": wonString,
@@ -125,8 +123,8 @@ class Event(db.Model):
             "title": self.title,
             "unixTime": self.unixTime,
             "location": self.location,
-            "date": self.date,
-            "time": self.time,
+            "date": datetime.fromtimestamp(self.unixTime).date(),
+            "time": datetime.fromtimestamp(self.unixTime).time(),
             "opponent": self.opponent,
             "win": wonString,
             "gender": Team.query.filter_by(id=self.team_id).first().gender,

@@ -138,7 +138,7 @@ Response:
 ```
 Request:
 {
-    "teamid": 3,
+    "team_id": 3,
     "name": "Cornell Women's Soccer",
     "password": "password1"
     "title": "Cornell Women's Soccer vs. UVA",

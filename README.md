@@ -1,5 +1,6 @@
 # AppdevHackChallenge
 
+The ios team members' repository can be found here: https://github.com/erin-xu/sports-tracker
 
 ## API Specification:
 
@@ -14,11 +15,15 @@ Response:
         {
             "id": 1,
             "name": "Cornell Women's Soccer",
+            "gender": "Women's",
+            "sport": "Soccer",
             "events": [ <SERIALIZED EVENT WITHOUT TEAM FIELD>, ... ]
         },
         {
             "id": 2,
             "name": "Cornell Men's Soccer",
+            "gender": "Men's",
+            "sport": "Soccer",
             "events": [ <SERIALIZED EVENT WITHOUT TEAM FIELD>, ... ]
         }
         ...
@@ -32,7 +37,9 @@ Response:
 Request:
 {
     "name": "Cornell Women's Soccer",
-    "password": "password1"
+    "password": "password1",
+    "gender": "Women's",
+    "sport": "Soccer",
 }
 ```
 ```
@@ -41,6 +48,8 @@ Response:
 {
     "id": 1,
     "name": "Cornell Women's Soccer",
+    "gender": "Women's",
+    "sport": "Soccer",
     "events": [ <SERIALIZED EVENT WITHOUT TEAM FIELD>, ... ]
 }
 ```
@@ -53,6 +62,8 @@ Response:
 {
     "id": 1,
     "name": "Cornell Women's Soccer",
+    "gender": "Women's",
+    "sport": "Soccer",
     "events": [ <SERIALIZED EVENT WITHOUT TEAM FIELD>, ... ]
 }
 ```
@@ -72,6 +83,8 @@ Response:
 {
     "id": 1,
     "name": "Cornell Women's Soccer",
+    "gender": "Women's",
+    "sport": "Soccer",
     "events": [ <SERIALIZED EVENT WITHOUT TEAM FIELD>, ... ]
 }
 ```

@@ -1,6 +1,6 @@
 version: "3"
 services:
-  final-:
+  finalproject-:
     image: "dylanmccreesh/final"
     ports:
       - 5000:5000

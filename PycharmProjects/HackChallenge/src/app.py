@@ -96,7 +96,7 @@ def post_event():
         return failure_response("Team not found!")
     if body.get("name") != team.name or body.get("password") != team.password:
         return failure_response("incorrect team name or password!", 403)
-    new_event = Event(title=body.get("title"), opponent=body.get("opponent"), location=body.get("location"), description=body.get("description"), unixTime=body.get("unixTime"), score=body.get("score"), win=body.get("win"), team_id=body.get("team_id"))
+    new_event = Event(title=body.get("title"), opponent=body.get("opponent"), location=body.get("location"), description=body.get("description"), unixTime=body.get("unixTime"), score=body.get("score", "-"), win=body.get("win", ""), team_id=body.get("team_id"))
     db.session.add(new_event)
     db.session.commit()
     return success_response(new_event.serialize(), 201)
@@ -137,16 +137,16 @@ def delete_event(event_id):
     db.session.commit()
     return success_response(event.serialize())
 
-@app.route("/api/events/<int:user_id>/", methods=["GET"])
+@app.route("/api/events/users/<int:user_id>/", methods=["GET"])
 def get_fav_events(user_id):
     '''Get all events associated with user_id.'''
     body = json.loads(request.data)
-    if not body.get("name") or not body.get("password"):
+    if not body.get("username") or not body.get("password"):
         return failure_response("not all fields were provided!", 400)
     user = Fan.query.filter_by(id=user_id).first()
     if user is None:
         return failure_response("User not found!")
-    if body.get("name") != user.username or body.get("password") != user.password:
+    if body.get("username") != user.username or body.get("password") != user.password:
         return failure_response("incorrect team name or password!", 403)
     teams = set([team.id for team in user.serialize()["favorite_teams"]])
     fav_events = list(filter(lambda event: event["team"]["id"] in teams, [e.sub_serialize() for e in Event.query.all()]))
@@ -165,9 +165,9 @@ def get_user(user_id):
 def create_user():
     '''Create user with provided information.'''
     body = json.loads(request.data)
-    if not body.get("name") or not body.get("password"):
+    if not body.get("username") or not body.get("password"):
         return failure_response("not all fields were provided!", 400)
-    new_user = Fan(username=body.get("name"), password=body.get("password"))
+    new_user = Fan(username=body.get("username"), password=body.get("password"))
     db.session.add(new_user)
     db.session.commit()
     return success_response(new_user.serialize(), 201)
@@ -177,11 +177,12 @@ def add_fav_team(user_id, team_id):
     '''Add team with team_id to users favorite teams.'''
     fan = Fan.query.filter_by(id=user_id).first()
     team = Team.query.filter_by(id=team_id).first()
+    body = json.loads(request.data)
     if not fan:
         return failure_response("Fan not found!")
     if not team:
         return failure_response("Team not found!")
-    if body.get("name") != fan.username or body.get("password") != fan.password:
+    if body.get("username") != fan.username or body.get("password") != fan.password:
         return failure_response("incorrect fan username or password!", 403)
     for t in fan.favorite_teams:
         if t.id == team.id:
@@ -190,16 +191,17 @@ def add_fav_team(user_id, team_id):
     db.session.commit()
     return success_response(team.serialize(), 201)
 
-@app.route("/api/users/<int:user_id>/favorites/<int:team_id>/", methods=["DELETE"])
+@app.route("/api/users/<int:user_id>/remove/<int:team_id>/", methods=["POST"])
 def remove_fav_team(user_id, team_id):
     '''Remove team with team_id from users favorite teams.'''
     fan = Fan.query.filter_by(id=user_id).first()
     team = Team.query.filter_by(id=team_id).first()
+    body = json.loads(request.data)
     if not fan:
         return failure_response("Fan not found!")
     if not team:
         return failure_response("Team not found!")
-    if body.get("name") != fan.username or body.get("password") != fan.password:
+    if body.get("username") != fan.username or body.get("password") != fan.password:
         return failure_response("incorrect fan username or password!", 403)
     for t in fan.favorite_teams:
         if t.id == team.id:

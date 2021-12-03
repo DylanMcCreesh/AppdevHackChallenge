@@ -103,10 +103,11 @@ class Event(db.Model):
             "title": self.title,
             "unixTime": self.unixTime,
             "location": self.location,
-            "date": datetime.fromtimestamp(self.unixTime).date(),
-            "time": datetime.fromtimestamp(self.unixTime).time(),
+            "date": datetime.fromtimestamp(self.unixTime).strftime("%m/%d/%Y"),
+            "time": datetime.fromtimestamp(self.unixTime).strftime("%H:%M"),
             "description": self.description,
             "opponent": self.opponent,
+            "score": self.score,
             "win": wonString,
             "gender": team.gender,
             "sport": team.sport,
@@ -121,13 +122,14 @@ class Event(db.Model):
             wonString = "L"
         if self.win == 2:
             wonString = "T"
+        team = Team.query.filter_by(id=self.team_id).first()
         return {
             "id": self.id,
             "title": self.title,
             "unixTime": self.unixTime,
             "location": self.location,
-            "date": datetime.fromtimestamp(self.unixTime).date(),
-            "time": datetime.fromtimestamp(self.unixTime).time(),
+            "date": datetime.fromtimestamp(self.unixTime).strftime("%m/%d/%Y"),
+            "time": datetime.fromtimestamp(self.unixTime).strftime("%H:%M"),
             "opponent": self.opponent,
             "win": wonString,
             "gender": team.gender,

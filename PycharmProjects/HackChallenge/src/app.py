@@ -74,7 +74,7 @@ def delete_team(team_id):
 def get_events():
     '''Get all events.'''
     return success_response(
-        {"events": sorted([e.sub_serialize() for e in Event.query.all()], key=lambda ev: ev["unixTime"])}
+        {"events": sorted([e.serialize() for e in Event.query.all()], key=lambda ev: ev["unixTime"])}
     )
 
 @app.route("/api/events/<int:event_id>/", methods=["GET"])
@@ -83,20 +83,20 @@ def get_event(event_id):
     event = Event.query.filter_by(id=event_id).first()
     if event is None:
         return failure_response("Event not found!")
-    return success_response(event.sub_serialize())
+    return success_response(event.serialize())
 
 @app.route("/api/events/", methods=["POST"])
 def post_event():
     '''Post new event.'''
     body = json.loads(request.data)
-    if not body.get("name") or not body.get("password") or not body.get("description") or not body.get("opponent") or not body.get("unixTime") or not body.get("location") or not body.get("title") or not body.get("team_id"):
-        return failure_response("not all fields were provided!", 400)
+    # if not body.get("name") or not body.get("password") or not body.get("description") or not body.get("opponent") or not body.get("unixTime") or not body.get("location") or not body.get("title") or not body.get("team_id"):
+    #     return failure_response("not all fields were provided!", 400)
     team = Team.query.filter_by(id=body.get("team_id")).first()
     if not team:
         return failure_response("Team not found!")
     if body.get("name") != team.name or body.get("password") != team.password:
         return failure_response("incorrect team name or password!", 403)
-    new_event = Event(title=body.get("title"), opponent=body.get("opponent"), location=body.get("location"), description=body.get("description"), unixTime=body.get("time"), score=body.get("score"), win=body.get(win), team_id=body.get(team_id))
+    new_event = Event(title=body.get("title"), opponent=body.get("opponent"), location=body.get("location"), description=body.get("description"), unixTime=body.get("unixTime"), score=body.get("score"), win=body.get("win"), team_id=body.get("team_id"))
     db.session.add(new_event)
     db.session.commit()
     return success_response(new_event.serialize(), 201)

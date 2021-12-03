@@ -107,6 +107,7 @@ Response:
             "time": "06:43:43",
             "description": "Enjoy pizza and root for our undefeated soccer team.",
             "opponent": "UVA Women's Soccer",
+            "score": "3-1",
             "win": "W",
             "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
         },
@@ -119,6 +120,7 @@ Response:
             "time": "06:43:43",
             "description": "Don't miss the game of the century!",
             "opponent": "Princeton Hockey"
+            "score": "1-2",
             "win": "L",
             "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
         }
@@ -141,6 +143,7 @@ Response:
     "time": "06:43:43",
     "description": "Enjoy pizza and root for our undefeated soccer team.",
     "opponent": "UVA Women's Soccer",
+    "score": "3-1",
     "win": "W",
     "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
 }
@@ -159,6 +162,7 @@ Request:
     "location": "Charles F. Berman Field",
     "description": "Enjoy pizza and root for our undefeated soccer team.",
     "opponent": "UVA Women's Soccer",
+    "score": "3-1",
     "win": "W"
 }
 ```
@@ -174,6 +178,41 @@ Response:
     "time": "06:43:43",
     "description": "Enjoy pizza and root for our undefeated soccer team.",
     "opponent": "UVA Women's Soccer",
+    "score": "3-1",
+    "win": "W",
+    "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
+}
+```
+
+### Update an event
+`"/api/events/", methods=["POST"]`
+```
+Request:
+{
+    "name": "Cornell Women's Soccer",
+    "password": "password1"
+    "title": "Cornell Women's Soccer vs. UVA",
+    "unixTime": 1638485544, // Event beginning in unix time
+    "location": "Charles F. Berman Field",
+    "description": "Enjoy pizza and root for our undefeated soccer team.",
+    "opponent": "UVA Women's Soccer",
+    "score": "3-1",
+    "win": "W"
+}
+```
+```
+Response:
+<HTTP STATUS CODE 201>
+{
+    "id": 1,
+    "title": "Cornell Women's Soccer vs. UVA",
+    "unixTime": 1638485544, // Event beginning in unix time
+    "location": "Charles F. Berman Field",
+    "date": "2021-08-02",
+    "time": "06:43:43",
+    "description": "Enjoy pizza and root for our undefeated soccer team.",
+    "opponent": "UVA Women's Soccer",
+    "score": "3-1",
     "win": "W",
     "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
 }
@@ -200,6 +239,7 @@ Response:
     "time": "06:43:43",
     "description": "Enjoy pizza and root for our undefeated soccer team.",
     "opponent": "UVA Women's Soccer",
+    "score": "3-1",
     "win": "W",
     "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
 }
@@ -228,6 +268,7 @@ Response:
             "time": "06:43:43",
             "description": "Enjoy pizza and root for our undefeated soccer team.",
             "opponent": "UVA Women's Soccer",
+            "score": "3-1",
             "win": "W",
             "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
         },
@@ -240,6 +281,7 @@ Response:
             "time": "06:43:43",
             "description": "Don't miss the game of the century!",
             "opponent": "Princeton Hockey"
+            "score": "1-2",
             "win": "L",
             "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
         }

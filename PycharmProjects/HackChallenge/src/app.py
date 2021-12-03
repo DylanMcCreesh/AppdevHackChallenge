@@ -74,7 +74,7 @@ def delete_team(team_id):
 def get_events():
     '''Get all events.'''
     return success_response(
-        {"events": [e.sub_serialize() for e in Event.query.all()]}
+        {"events": sorted([e.sub_serialize() for e in Event.query.all()], key=lambda ev: ev["unixTime"])}
     )
 
 @app.route("/api/events/<int:event_id>/", methods=["GET"])
@@ -85,7 +85,7 @@ def get_event(event_id):
         return failure_response("Event not found!")
     return success_response(event.sub_serialize())
 
-@app.route("/api/events/", methods=["POST"])
+@app.route("/api/events/", methods=["POST"]) # TODO
 def post_event():
     '''Post new event.'''
     body = json.loads(request.data)
@@ -114,9 +114,18 @@ def delete_event(event_id):
 
 @app.route("/api/events/<int:user_id>/", methods=["GET"])
 def get_fav_events(user_id):
-    '''Get all events associated with user with user_id.'''
-    pass
-
+    '''Get all events associated with user_id.'''
+    body = json.loads(request.data)
+    if not body.get("name") or not body.get("password"):
+        return failure_response("not all fields were provided!", 400)
+    user = Fan.query.filter_by(id=user_id).first()
+    if user is None:
+        return failure_response("User not found!")
+    if body.get("name") != user.username or body.get("password") != user.password:
+        return failure_response("incorrect team name or password!", 403)
+    teams = set([team.id for team in user.serialize()["favorite_teams"]])
+    fav_events = filter(lambda event: event["team"]["id"] in teams, [e.sub_serialize() for e in Event.query.all()])
+    return success_response({"events": sorted(fav_events, key=lambda ev: ev["unixTime"])})
 
 # User related routes
 @app.route("/api/users/<int:user_id>/", methods=["GET"])

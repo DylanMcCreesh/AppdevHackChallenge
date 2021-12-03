@@ -131,6 +131,7 @@ class Event(db.Model):
             "date": datetime.fromtimestamp(self.unixTime).strftime("%m/%d/%Y"),
             "time": datetime.fromtimestamp(self.unixTime).strftime("%H:%M"),
             "opponent": self.opponent,
+            "score": self.score,
             "win": wonString,
             "gender": team.gender,
             "sport": team.sport,

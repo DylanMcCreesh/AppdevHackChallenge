@@ -206,7 +206,7 @@ Response:
 ```
 
 ### Get all events from user's favorite teams
-`"/api/events/<int:user_id>/", methods=["GET"]`
+`"/api/events/users/<int:user_id>/", methods=["GET"]`
 ```
 Request:
 {
@@ -307,7 +307,7 @@ Response:
 ```
 
 ### Remove team from favorites
-`"/api/users/<int:user_id>/favorites/<int:team_id>/", methods=["DELETE"]`
+`"/api/users/<int:user_id>/remove/<int:team_id>/", methods=["POST"]`
 ```
 Request:
 {

@@ -146,8 +146,7 @@ Request:
     "location": "Charles F. Berman Field",
     "description": "Enjoy pizza and root for our undefeated soccer team.",
     "opponent": "UVA Women's Soccer",
-    "win": "W",
-    "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
+    "win": "W"
 }
 ```
 ```

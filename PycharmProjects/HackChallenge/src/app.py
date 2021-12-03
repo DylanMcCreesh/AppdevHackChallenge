@@ -37,9 +37,9 @@ def get_teams():
 def create_team():
     '''Create new team with given name and password.'''
     body = json.loads(request.data)
-    if not body.get("name") or not body.get("password"):
+    if not body.get("name") or not body.get("password") or not body.get("sport") or not body.get("gender"):
         return failure_response("not all fields were provided!", 400)
-    new_team = Team(name=body.get("name"), password=body.get("password"))
+    new_team = Team(name=body.get("name"), password=body.get("password"), sport = body.get("sport"), gender = body.get("gender"))
     db.session.add(new_team)
     db.session.commit()
     return success_response(new_team.serialize(), 201)

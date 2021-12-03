@@ -63,6 +63,8 @@ class Team(db.Model):
         return {
             "id": self.id,
             "name": self.name,
+            "gender": self.gender,
+            "sport": self.sport,
         }
 
 class Event(db.Model):
@@ -84,17 +86,18 @@ class Event(db.Model):
         self.description = kwargs.get("description")
         self.opponent = kwargs.get("opponent")
         self.win = kwargs.get("win")
-        self.score = kwargs.get("score")
+        self.score = kwargs.get("score", "-")
         self.team_id = kwargs.get("team_id")
 
     def serialize(self):
-        wonString = None
+        wonString = ""
         if self.win == 0:
             wonString = "W"
         if self.win == 1:
             wonString = "L"
         if self.win == 2:
             wonString = "T"
+        team = Team.query.filter_by(id=self.team_id).first()
         return {
             "id": self.id,
             "title": self.title,
@@ -105,11 +108,13 @@ class Event(db.Model):
             "description": self.description,
             "opponent": self.opponent,
             "win": wonString,
-            "team": Team.query.filter_by(id=self.team_id).first().sub_serialize()
+            "gender": team.gender,
+            "sport": team.sport,
+            "team": team.sub_serialize(),
         }
 
     def sub_serialize(self):
-        wonString = None
+        wonString = ""
         if self.win == 0:
             wonString = "W"
         if self.win == 1:
@@ -124,5 +129,7 @@ class Event(db.Model):
             "date": datetime.fromtimestamp(self.unixTime).date(),
             "time": datetime.fromtimestamp(self.unixTime).time(),
             "opponent": self.opponent,
-            "win": wonString
+            "win": wonString,
+            "gender": team.gender,
+            "sport": team.sport,
         }

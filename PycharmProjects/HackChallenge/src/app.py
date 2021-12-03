@@ -103,7 +103,7 @@ def post_event():
     return success_response(new_event.serialize(), 201)
 
 @app.route("/api/events/<int:event_id>/", methods=["POST"])
-def update_specific_event():
+def update_specific_event(event_id):
     event = Event.query.filter_by(id=event_id).first()
     if event is None:
         return failure_response("Event not found!")
@@ -116,7 +116,7 @@ def update_specific_event():
     event.won = body.get("won", event.won)
     event.title = body.get("title", event.title)
     event.description = body.get("description", event.description)
-    event.opponent = body.get("opponent"), event.opponent
+    event.opponent = body.get("opponent", event.opponent)
     event.unixTime = body.get("unixTime", event.unixTime)
     event.location = body.get("location", event.location)
     db.session.commit()

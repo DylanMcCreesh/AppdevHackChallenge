@@ -148,8 +148,8 @@ def get_fav_events(user_id):
         return failure_response("User not found!")
     if body.get("username") != user.username or body.get("password") != user.password:
         return failure_response("incorrect team name or password!", 403)
-    teams = set([team.id for team in user.serialize()["favorite_teams"]])
-    fav_events = list(filter(lambda event: event["team"]["id"] in teams, [e.sub_serialize() for e in Event.query.all()]))
+    teams = set([team["id"] for team in user.serialize()["favorite_teams"]])
+    fav_events = list(filter(lambda event: event["team"]["id"] in teams, [e.serialize() for e in Event.query.all()]))
     return success_response({"events": sorted(fav_events, key=lambda ev: ev["unixTime"])})
 
 # User related routes

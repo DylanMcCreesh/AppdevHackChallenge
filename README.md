@@ -138,7 +138,7 @@ Response:
 ```
 Request:
 {
-    "teamid": 3,
+    "team_id": 3,
     "name": "Cornell Women's Soccer",
     "password": "password1"
     "title": "Cornell Women's Soccer vs. UVA",
@@ -146,8 +146,7 @@ Request:
     "location": "Charles F. Berman Field",
     "description": "Enjoy pizza and root for our undefeated soccer team.",
     "opponent": "UVA Women's Soccer",
-    "win": "W",
-    "team": <SERIALIZED TEAM WITHOUT EVENT FIELD>
+    "win": "W"
 }
 ```
 ```

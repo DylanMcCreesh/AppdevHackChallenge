@@ -97,7 +97,7 @@ def post_event():
         return failure_response("Team not found!")
     if body.get("name") != team.name or body.get("password") != team.password:
         return failure_response("incorrect team name or password!", 403)
-    new_event = Event(title=body.get("title"), opponent=body.get("opponent"), location=body.get("location"), description=body.get("description"), unixTime=body.get("unixTime"), score=body.get("score", "-"), win=body.get("win", ""), team_id=body.get("team_id"))
+    new_event = Event(title=body.get("title"), opponent=body.get("opponent"), location=body.get("location"), description=body.get("description"), unixTime=body.get("unixTime"), score=body.get("score", "-"), win=body.get("win"), team_id=body.get("team_id"))
     db.session.add(new_event)
     db.session.commit()
     return success_response(new_event.serialize(), 201)
@@ -114,7 +114,7 @@ def update_specific_event(event_id):
     if body.get("name") != team.name or body.get("password") != team.password:
         return failure_response("incorrect team name or password!", 403)
     event.score = body.get("score", event.score)
-    event.won = body.get("win", event.win)
+    event.win = body.get("win", event.win)
     event.title = body.get("title", event.title)
     event.description = body.get("description", event.description)
     event.opponent = body.get("opponent", event.opponent)

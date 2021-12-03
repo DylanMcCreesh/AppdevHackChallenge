@@ -73,7 +73,7 @@ class Event(db.Model):
     unixTime = db.Column(db.Integer, nullable=False)
     location = db.Column(db.String, nullable=False)
     opponent = db.Column(db.String, nullable=False)
-    score = db.Column(db.String, nullable=False)
+    score = db.Column(db.String, nullable=True)
     win = db.Column(db.Integer, nullable=True)
     team_id = db.Column(db.Integer, db.ForeignKey("team.id"))
 

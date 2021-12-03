@@ -85,16 +85,41 @@ def get_event(event_id):
         return failure_response("Event not found!")
     return success_response(event.sub_serialize())
 
-@app.route("/api/events/", methods=["POST"]) # TODO
+@app.route("/api/events/", methods=["POST"])
 def post_event():
     '''Post new event.'''
     body = json.loads(request.data)
-    if not body.get("name") or not body.get("password"):
+    if not body.get("name") or not body.get("password") or not body.get("description") or not body.get("opponent") or not body.get("unixTime") or not body.get("location") or not body.get("title") or not body.get("team_id"):
         return failure_response("not all fields were provided!", 400)
-    new_team = Team(name=body.get("name"), password=body.get("password"))
-    db.session.add(new_team)
+    team = Team.query.filter_by(id=body.get("team_id")).first()
+    if not team:
+        return failure_response("Team not found!")
+    if body.get("name") != team.name or body.get("password") != team.password:
+        return failure_response("incorrect team name or password!", 403)
+    new_event = Event(title=body.get("title"), opponent=body.get("opponent"), location=body.get("location"), description=body.get("description"), unixTime=body.get("time"), score=body.get("score"), win=body.get(win), team_id=body.get(team_id))
+    db.session.add(new_event)
     db.session.commit()
-    return success_response(new_team.serialize(), 201)
+    return success_response(new_event.serialize(), 201)
+
+@app.route("/api/events/<int:event_id>/", methods=["POST"])
+def update_specific_event():
+    event = Event.query.filter_by(id=event_id).first()
+    if event is None:
+        return failure_response("Event not found!")
+    team = Team.query.filter_by(id=event.team_id).first()
+    if not body.get("name") or not body.get("password"):
+        return failure_response("please provide both team name and password!", 400)
+    if body.get("name") != team.name or body.get("password") != team.password:
+        return failure_response("incorrect team name or password!", 403)
+    event.score = body.get("score", event.score)
+    event.won = body.get("won", event.won)
+    event.title = body.get("title", event.title)
+    event.description = body.get("description", event.description)
+    event.opponent = body.get("opponent"), event.opponent
+    event.unixTime = body.get("unixTime", event.unixTime)
+    event.location = body.get("location", event.location)
+    db.session.commit()
+    return success_response(event.serialize())
 
 @app.route("/api/events/<int:event_id>/", methods=["DELETE"])
 def delete_event(event_id):

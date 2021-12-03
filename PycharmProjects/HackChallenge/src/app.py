@@ -104,6 +104,7 @@ def post_event():
 
 @app.route("/api/events/<int:event_id>/", methods=["POST"])
 def update_specific_event(event_id):
+    body = json.loads(request.data)
     event = Event.query.filter_by(id=event_id).first()
     if event is None:
         return failure_response("Event not found!")
@@ -113,7 +114,7 @@ def update_specific_event(event_id):
     if body.get("name") != team.name or body.get("password") != team.password:
         return failure_response("incorrect team name or password!", 403)
     event.score = body.get("score", event.score)
-    event.won = body.get("won", event.won)
+    event.won = body.get("win", event.win)
     event.title = body.get("title", event.title)
     event.description = body.get("description", event.description)
     event.opponent = body.get("opponent", event.opponent)

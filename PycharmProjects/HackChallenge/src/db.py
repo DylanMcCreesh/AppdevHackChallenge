@@ -55,7 +55,7 @@ class Team(db.Model):
             "name": self.name,
             "gender": self.gender,
             "sport": self.sport,
-            "events": [e.sub_serialize() for e in self.events]
+            "events": sorted([e.sub_serialize() for e in self.events], key= lambda ev: ev["unixTime"])
         }
 
     def sub_serialize(self):
@@ -107,9 +107,7 @@ class Event(db.Model):
             "description": self.description,
             "opponent": self.opponent,
             "win": wonString,
-            "team": Team.query.filter_by(id=self.team_id).first().sub_serialize(),
-            "gender": Team.query.filter_by(id=self.team_id).first().gender,
-            "sport": Team.query.filter_by(id=self.team_id).first().sport,
+            "team": Team.query.filter_by(id=self.team_id).first().sub_serialize()
         }
 
     def sub_serialize(self):
@@ -128,7 +126,5 @@ class Event(db.Model):
             "date": self.date,
             "time": self.time,
             "opponent": self.opponent,
-            "win": wonString,
-            "gender": Team.query.filter_by(id=self.team_id).first().gender,
-            "sport": Team.query.filter_by(id=self.team_id).first().sport,
+            "win": wonString
         }

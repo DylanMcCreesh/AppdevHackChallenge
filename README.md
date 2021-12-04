@@ -1,7 +1,7 @@
 # AppdevHackChallenge
 
 1. App Name: Our app's name is "score!".
-2. App Tagline: An app designed for all Cornell Sports enthusiasts, score! helps its users keep track of Cornell Sporting events.
+2. App Tagline: All things Cornell Sports!
 3. The ios team members' repository can be found here: https://github.com/erin-xu/sports-tracker
 4. [Insert Screenshots]
 5. App Description: The purpose of score! to make tracking and keeping up with Cornell sports easier for Cornell's incredibly busy students. It is an app which, on its backend, maintains an API of Cornell sporting events, Cornell teams, and users. A team can host many events, and each event is owned by exactly one Cornell team. The backend provides an API which holds all the events that teams have posted, serialized into accessible and readable data about the event for the frontend. On the frontend, data is retrieved from the provided API, and organized so users can filter, sort, and view both completed and upcoming Cornell sporting events. Users are able to filter upcoming events by both type of sport and the team's gender (i.e. Men's Soccer vs. Women's Soccer). Users are also able to access a list of a specific team's upcoming and completed events. When viewing an event, users see the time, date, and location of the event (and if the event has been completed, the score and whether Cornell won or not). 
